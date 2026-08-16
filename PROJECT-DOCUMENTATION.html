@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nepal Bipolar Foundation — Project Documentation</title>
+<style>
+  :root {
+    --green: #2e7d32;
+    --green-dark: #23442b;
+    --green-soft: #e8f0e9;
+    --red: #c62828;
+    --bg: #f6f8f7;
+    --card: #ffffff;
+    --text: #2b2b2b;
+    --muted: #777;
+    --border: #e0e4e1;
+    --code-bg: #f2f5f3;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  header.hero {
+    background: linear-gradient(135deg, var(--green-dark), var(--green));
+    color: #fff;
+    padding: 3rem 1.5rem 2.5rem;
+    text-align: center;
+  }
+  header.hero h1 { margin: 0; font-size: 2rem; }
+  header.hero p { margin: 0.5rem 0 0; opacity: 0.9; }
+  .badges { margin-top: 1rem; }
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 0.2rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    margin: 0.2rem;
+  }
+  .layout { display: flex; max-width: 1400px; margin: 0 auto; }
+  nav.toc {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    width: 280px;
+    flex-shrink: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 1.5rem 1rem;
+    background: #fff;
+    border-right: 1px solid var(--border);
+    font-size: 0.88rem;
+  }
+  nav.toc h3 {
+    margin: 0 0 0.5rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+  }
+  nav.toc a {
+    display: block;
+    color: var(--text);
+    text-decoration: none;
+    padding: 0.25rem 0.4rem;
+    border-radius: 6px;
+    border-left: 3px solid transparent;
+  }
+  nav.toc a:hover { background: var(--green-soft); }
+  nav.toc a.section {
+    font-weight: 700;
+    margin-top: 0.8rem;
+    color: var(--green-dark);
+  }
+  main.content { flex: 1; padding: 2rem 2rem 4rem; min-width: 0; }
+  section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.6rem;
+    margin-bottom: 1.6rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  section h2 {
+    margin: 0 0 0.4rem;
+    font-size: 1.4rem;
+    color: var(--green-dark);
+    border-bottom: 2px solid var(--green-soft);
+    padding-bottom: 0.4rem;
+  }
+  section h3 { margin: 1.4rem 0 0.4rem; color: var(--green-dark); }
+  section h4 { margin: 1.1rem 0 0.3rem; }
+  section p { margin: 0.5rem 0; }
+  section ul, section ol { margin: 0.5rem 0; padding-left: 1.4rem; }
+  section li { margin: 0.25rem 0; }
+  .file-path {
+    font-family: var(--mono);
+    background: var(--green-soft);
+    color: var(--green-dark);
+    padding: 0.1rem 0.45rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    word-break: break-all;
+  }
+  .badge-info {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-left: 0.5rem;
+  }
+  code {
+    font-family: var(--mono);
+    background: var(--code-bg);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  pre {
+    background: #1e2b24;
+    color: #dcebe0;
+    padding: 1rem 1.2rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  pre code { background: none; padding: 0; color: inherit; }
+  table { border-collapse: collapse; width: 100%; margin: 0.8rem 0; font-size: 0.9rem; }
+  th, td { border: 1px solid var(--border); padding: 0.5rem 0.7rem; text-align: left; }
+  th { background: #f3f6f4; }
+  tr:nth-child(even) td { background: #fafbfa; }
+  .note {
+    background: #fff8e1;
+    border-left: 4px solid #f9a825;
+    padding: 0.6rem 0.9rem;
+    border-radius: 0 8px 8px 0;
+    margin: 0.8rem 0;
+    font-size: 0.9rem;
+  }
+  .tip {
+    background: var(--green-soft);
+    border-left: 4px solid var(--green);
+    padding: 0.6rem 0.9rem;
+    border-radius: 0 8px 8px 0;
+    margin: 0.8rem 0;
+    font-size: 0.9rem;
+  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+  .stat-card { background: #fafbfa; border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; }
+  .stat-card .num { font-size: 1.8rem; font-weight: 800; color: var(--green); }
+  .stat-card .lbl { font-size: 0.8rem; color: var(--muted); }
+  .toc-prefix { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+  .flow {
+    background: #fafbfa;
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin: 0.8rem 0;
+    font-size: 0.88rem;
+  }
+  @media (max-width: 900px) {
+    .layout { flex-direction: column; }
+    nav.toc { position: static; width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+  }
+  .method { display: inline-block; font-family: var(--mono); font-size: 0.75rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 4px; color: #fff; }
+  .method-get  { background: #1565c0; }
+  .method-post { background: #2e7d32; }
+  .method-patch{ background: #f9a825; color: #333; }
+  .method-del  { background: #c62828; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>Nepal Bipolar Foundation — Project Documentation</h1>
+  <p>Full-stack web app: Vue 3 frontend + Feathers 5 API + MongoDB. Every file explained in detail.</p>
+  <div class="badges">
+    <span class="badge">Vue 3 + Vite + TypeScript</span>
+    <span class="badge">Feathers 5 + Express</span>
+    <span class="badge">MongoDB + Mongoose</span>
+    <span class="badge">Pinia</span>
+    <span class="badge">Docker</span>
+    <span class="badge">JWT auth</span>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="toc">
+    <h3>Table of contents</h3>
+    <a class="section" href="#overview">Overview</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#how-it-runs">How it runs</a>
+    <a href="#data-model">Data model</a>
+    <a href="#endpoints">API endpoints</a>
+
+    <a class="section" href="#root">Root files</a>
+    <a href="#package-json"><span class="toc-prefix">./</span>package.json</a>
+    <a href="#dev-mjs"><span class="toc-prefix">./</span>dev.mjs</a>
+    <a href="#docker-compose"><span class="toc-prefix">./</span>docker-compose.yml</a>
+    <a href="#dockerfile"><span class="toc-prefix">./</span>Dockerfile</a>
+    <a href="#dockerignore"><span class="toc-prefix">./</span>.dockerignore</a>
+
+    <a class="section" href="#server">Server (API)</a>
+    <a href="#server-package"><span class="toc-prefix">server/</span>package.json</a>
+    <a href="#server-tsconfig"><span class="toc-prefix">server/</span>tsconfig.json</a>
+    <a href="#server-config"><span class="toc-prefix">server/config/</span>default.json</a>
+    <a href="#server-src-index"><span class="toc-prefix">server/src/</span>index.ts</a>
+    <a href="#server-src-app"><span class="toc-prefix">server/src/</span>app.ts</a>
+    <a href="#server-src-auth"><span class="toc-prefix">server/src/</span>authentication.ts</a>
+    <a href="#server-src-types"><span class="toc-prefix">server/src/</span>types.ts</a>
+    <a href="#server-src-upload"><span class="toc-prefix">server/src/</span>upload.ts</a>
+    <a href="#server-users"><span class="toc-prefix">server/src/services/users/</span></a>
+    <a href="#server-details"><span class="toc-prefix">server/src/services/user-details/</span></a>
+
+    <a class="section" href="#client">Client (Frontend)</a>
+    <a href="#client-package"><span class="toc-prefix">client/</span>package.json</a>
+    <a href="#client-index"><span class="toc-prefix">client/</span>index.html</a>
+    <a href="#client-vite"><span class="toc-prefix">client/</span>vite.config.ts</a>
+    <a href="#client-tsconfig"><span class="toc-prefix">client/</span>tsconfig*.json</a>
+    <a href="#client-src-main"><span class="toc-prefix">client/src/</span>main.ts</a>
+    <a href="#client-src-feathers"><span class="toc-prefix">client/src/</span>feathers.ts</a>
+    <a href="#client-src-app"><span class="toc-prefix">client/src/</span>App.vue</a>
+    <a href="#client-store"><span class="toc-prefix">client/src/stores/</span>auth.ts</a>
+    <a href="#client-login"><span class="toc-prefix">client/src/components/</span>Login.vue</a>
+    <a href="#client-register"><span class="toc-prefix">client/src/components/</span>Register.vue</a>
+    <a href="#client-dashboard"><span class="toc-prefix">client/src/components/</span>Dashboard.vue</a>
+    <a href="#client-users"><span class="toc-prefix">client/src/components/</span>UsersAdmin.vue</a>
+    <a href="#client-profile"><span class="toc-prefix">client/src/components/</span>Profile.vue</a>
+    <a href="#client-env"><span class="toc-prefix">client/src/</span>vite-env.d.ts</a>
+
+    <a class="section" href="#summary">Key takeaways</a>
+  </nav>
+
+  <main class="content">
+
+    <!-- ===================== OVERVIEW ===================== -->
+    <section id="overview">
+      <h2>Overview</h2>
+      <p>
+        This is the <strong>Nepal Bipolar Foundation</strong> web application — an admin
+        dashboard for managing members of a foundation supporting people living with
+        bipolar disorder in Nepal. It is a <strong>full-stack</strong> project with three parts:
+      </p>
+      <div class="grid">
+        <div class="stat-card"><div class="num">37</div><div class="lbl">source &amp; config files documented</div></div>
+        <div class="stat-card"><div class="num">2</div><div class="lbl">MongoDB collections</div></div>
+        <div class="stat-card"><div class="num">1</div><div class="lbl">command to run everything</div></div>
+        <div class="stat-card"><div class="num">2</div><div class="lbl">deploy modes (local &amp; Docker)</div></div>
+      </div>
+      <ul>
+        <li><strong>Backend</strong> — <code>server/</code>: Feathers 5 + Express + Mongoose API. Handles login (JWT), user registration, profile updates, image uploads, and serves the built frontend in production.</li>
+        <li><strong>Frontend</strong> — <code>client/</code>: Vue 3 + Vite + Pinia single-page app. Login/register screens plus a dashboard with a Users table (full CRUD) and a Profile page.</li>
+        <li><strong>Orchestration</strong> — Root-level <code>dev.mjs</code>, <code>docker-compose.yml</code>, <code>Dockerfile</code>, and <code>package.json</code> glue the two halves together.</li>
+      </ul>
+      <h3>Key design decision</h3>
+      <p>
+        User records are split across <strong>two collections</strong>: <code>users</code> holds
+        identity + login data (name, email, hashed password, avatar), while
+        <code>user_details</code> holds optional profile info (age, city). Feathers
+        <em>hooks</em> keep the two in sync so the API looks unchanged to the client — a nice
+        example of normalizing data behind the API layer.
+      </p>
+    </section>
+
+    <!-- ===================== ARCHITECTURE ===================== -->
+    <section id="architecture">
+      <h2>Architecture</h2>
+      <pre><code>                      ┌────────────────────────────────────────────┐
+                      │              Browser (SPA)                 │
+                      │  Vue 3 + Pinia + Feathers client (REST)    │
+                      └──────────────────────┬─────────────────────┘
+                                             │  HTTP (fetch / axios)
+                                             ▼
+                      ┌────────────────────────────────────────────┐
+                      │            Server (port 3030)              │
+                      │  Feathers 5  +  Express  +  Mongoose       │
+                      │  ┌──────────┐  ┌──────────┐  ┌─────────┐   │
+                      │  │ /users   │  │/user-    │  │/upload  │   │
+                      │  │ service  │  │details   │  │(multer) │   │
+                      │  └────┬─────┘  │service   │  └────┬────┘   │
+                      │       │        └──────────┘       │        │
+                      │       └─────────────┬──────────────┘        │
+                      │         /authentication (JWT + local)       │
+                      └────────────────────┬────────────────────────┘
+                                           │
+                                           ▼  Mongoose ODM
+                      ┌────────────────────────────────────────────┐
+                      │              MongoDB                        │
+                      │  • users         (name, email, hash, avatar)│
+                      │  • user_details  (userId → age, city)       │
+                      └────────────────────────────────────────────┘</code></pre>
+      <div class="flow">
+        <strong>Request flow example — login:</strong><br />
+        1. Login.vue submits email + password.<br />
+        2. The Pinia auth store calls <code>feathers.authenticate()</code> → <code>POST /authentication</code>.<br />
+        3. Server verifies against the users collection via the <em>local</em> strategy and returns a JWT.<br />
+        4. The JWT is stored in <code>localStorage</code>; <code>auth.user</code> is filled → App.vue swaps to the Dashboard.<br />
+        5. Every later request (e.g. <code>GET /users</code>) sends the JWT, verified by the <em>jwt</em> strategy.
+      </div>
+    </section>
+
+    <!-- ===================== HOW IT RUNS ===================== -->
+    <section id="how-it-runs">
+      <h2>How it runs</h2>
+      <h3>Option A — Local development (no Docker)</h3>
+      <ol>
+        <li>Install MongoDB locally (running on <code>127.0.0.1:27017</code>).</li>
+        <li><code>npm install</code> in <code>server/</code> and <code>client/</code>.</li>
+        <li>From the repo root: <code>npm run dev</code> → runs <code>dev.mjs</code>, which starts both processes.</li>
+      </ol>
+      <table>
+        <tr><th>Process</th><th>URL</th><th>Command</th></tr>
+        <tr><td>API server (tsx watch)</td><td>http://localhost:3030</td><td>npm run dev (in server/)</td></tr>
+        <tr><td>Vite dev server</td><td>http://localhost:5173</td><td>npm run dev (in client/)</td></tr>
+      </table>
+      <h3>Option B — Docker (one command, includes MongoDB)</h3>
+      <pre><code>docker compose up --build</code></pre>
+      <p>
+        Creates two containers: <code>mongo</code> (database) and <code>app</code> (full-stack
+        image on port 3030). The built Vue app is served by the API itself, so the whole
+        site lives at http://localhost:3030.
+      </p>
+      <h3>Type checking</h3>
+      <p>From the root: <code>npm run typecheck</code> runs <code>tsc --noEmit</code> on the server and <code>vue-tsc --noEmit</code> on the client.</p>
+    </section>
+
+    <!-- ===================== DATA MODEL ===================== -->
+    <section id="data-model">
+      <h2>Data model (MongoDB)</h2>
+      <table>
+        <tr><th>Collection</th><th>Field</th><th>Type</th><th>Notes</th></tr>
+        <tr><td rowspan="5"><strong>users</strong></td><td>_id</td><td>ObjectId</td><td>auto</td></tr>
+        <tr><td>name</td><td>String</td><td>required</td></tr>
+        <tr><td>email</td><td>String</td><td>required, <strong>unique</strong>, lowercase/trimmed — used to log in</td></tr>
+        <tr><td>password</td><td>String</td><td>required, stored as a <strong>bcrypt hash</strong>; never returned to clients</td></tr>
+        <tr><td>avatar</td><td>String|null</td><td>public URL of the profile image</td></tr>
+        <tr><td rowspan="3"><strong>user_details</strong></td><td>_id</td><td>ObjectId</td><td>auto</td></tr>
+        <tr><td>userId</td><td>ObjectId → users</td><td>required, <strong>unique</strong> (one row per user)</td></tr>
+        <tr><td>age / city</td><td>Number / String</td><td>nullable, trimmed</td></tr>
+      </table>
+      <div class="note">
+        <strong>Why split?</strong> Authentication data and profile data rarely change together.
+        Keeping <code>age</code>/<code>city</code> in a second collection lets each evolve independently.
+        The <code>/users</code> hooks (users.service.ts) transparently attach/detach these fields.
+      </div>
+      <p>Both schemas use <code>timestamps: true</code>, so mongoose maintains <code>createdAt</code> and <code>updatedAt</code> automatically.</p>
+    </section>
+
+    <!-- ===================== ENDPOINTS ===================== -->
+    <section id="endpoints">
+      <h2>API endpoints</h2>
+      <table>
+        <tr><th>Method</th><th>Path</th><th>Auth</th><th>Purpose</th></tr>
+        <tr><td><span class="method method-post">POST</span></td><td><code>/authentication</code></td><td>—</td><td>Log in (local: email+password) → returns JWT</td></tr>
+        <tr><td><span class="method method-get">GET</span></td><td><code>/users</code></td><td>JWT</td><td>List all users (dashboard)</td></tr>
+        <tr><td><span class="method method-post">POST</span></td><td><code>/users</code></td><td>—</td><td>Register a new user (password auto-hashed)</td></tr>
+        <tr><td><span class="method method-get">GET</span></td><td><code>/users/:id</code></td><td>JWT</td><td>View one user</td></tr>
+        <tr><td><span class="method method-patch">PATCH</span></td><td><code>/users/:id</code></td><td>JWT</td><td>Update name / avatar / age / city</td></tr>
+        <tr><td><span class="method method-del">DELETE</span></td><td><code>/users/:id</code></td><td>JWT</td><td>Delete a user (and their details row)</td></tr>
+        <tr><td><span class="method method-post">POST</span></td><td><code>/upload</code></td><td>—</td><td>Upload profile image (multipart, field <code>image</code>) → returns <code>{ url }</code></td></tr>
+        <tr><td><span class="method method-get">GET</span></td><td><code>/public/uploads/*</code></td><td>—</td><td>Static files: the uploaded images</td></tr>
+        <tr><td><span class="method method-get">GET</span></td><td><code>/user-details*</code></td><td>JWT</td><td>Exposed REST but only used internally by hooks</td></tr>
+      </table>
+    </section>
+
+    <!-- ===================== ROOT FILES ===================== -->
+    <section id="root">
+      <h2>Root-level files</h2>
+    </section>
+
+    <section id="package-json">
+      <h2><span class="file-path">./package.json</span> <span class="badge-info">npm workspace entry point</span></h2>
+      <p>The top-level npm manifest. It holds no dependencies itself — it exists to give the whole repo a name and three convenience scripts:</p>
+      <ul>
+        <li><code>dev</code> / <code>start</code> → run <code>node dev.mjs</code> (launches server + client together).</li>
+        <li><code>typecheck</code> → runs <code>npm run typecheck --prefix server</code> then <code>--prefix client</code>, i.e. type-checks both halves from one command.</li>
+      </ul>
+      <p>It is the file the Dockerfile's <code>npm start</code> and local <code>npm run dev</code> both hang off.</p>
+    </section>
+
+    <section id="dev-mjs">
+      <h2><span class="file-path">./dev.mjs</span> <span class="badge-info">local orchestrator</span></h2>
+      <p>A small Node script that runs the API and the Vue dev server <strong>simultaneously</strong>, so one command starts the whole stack.</p>
+      <ul>
+        <li><code>spawn()</code> launches <code>npm run dev</code> in <code>server/</code> and <code>client/</code>.</li>
+        <li>Each child's stdout/stderr is line-prefixed with <code>[server]</code> / <code>[client]</code> so the output stays readable.</li>
+        <li><strong>Windows handling:</strong> npm is <code>npm.cmd</code> on Windows, so children run through <code>cmd.exe /c</code>; on macOS/Linux they run npm directly.</li>
+        <li><strong>Clean shutdown:</strong> on Ctrl+C it runs <code>taskkill /pid &lt;pid&gt; /T /F</code> on Windows (npm spawns grandchildren like tsx/vite that must be killed too) or <code>SIGTERM</code> elsewhere, then exits.</li>
+      </ul>
+    </section>
+
+    <section id="docker-compose">
+      <h2><span class="file-path">./docker-compose.yml</span> <span class="badge-info">one-command Docker stack</span></h2>
+      <p>Declares the two containers that make up the production stack:</p>
+      <ul>
+        <li><strong>mongo</strong> — official <code>mongo:7</code> image. Its data is persisted in a named volume <code>mongo-data</code> mapped to <code>/data/db</code>, so it survives <code>docker compose down</code>.</li>
+        <li><strong>app</strong> — built from the Dockerfile. It <code>depends_on</code> mongo and receives the <code>MONGODB_URI=mongodb://mongo:27017/nepal-bipolar-foundation</code> env var. The <code>mongo</code> hostname is resolved by Docker's internal DNS to the database container. Port 3030 is exposed to the host.</li>
+      </ul>
+      <div class="tip">Both containers use <code>restart: unless-stopped</code>, so they come back after crashes or machine reboots.</div>
+    </section>
+
+    <section id="dockerfile">
+      <h2><span class="file-path">./Dockerfile</span> <span class="badge-info">multi-stage production build</span></h2>
+      <p>Builds the entire app into a single image using <strong>three stages</strong> so the final image stays small:</p>
+      <ol>
+        <li><strong>client-build</strong> (node:20-alpine): installs client deps with <code>npm ci --legacy-peer-deps</code> and runs <code>vite build</code> → static files in <code>/app/client/dist</code>. An empty <code>VITE_SERVER_URL</code> is baked in so the SPA talks to the API on the same origin (localhost:3030).</li>
+        <li><strong>server-deps</strong> (node:20-alpine): installs server deps (again with <code>--legacy-peer-deps</code>) into <code>/app/server/node_modules</code>.</li>
+        <li><strong>runtime</strong> (node:20-alpine): copies the server's <code>node_modules</code> and source, then copies the built client into <code>/app/public/app</code> and sets <code>CLIENT_DIST</code> to point at it. Exposes port 3030 and runs <code>npm start</code> (the Feathers API, which also serves the frontend).</li>
+      </ol>
+      <p><code>COPY client/package.json client/package-lock.json ./</code> before copying the rest is a cache-friendly trick: dependency layers only rebuild when the lockfile changes.</p>
+    </section>
+
+    <section id="dockerignore">
+      <h2><span class="file-path">./.dockerignore</span> <span class="badge-info">build context exclusions</span></h2>
+      <p>Tells Docker what <em>not</em> to send into the build context, keeping the build fast and the image clean:</p>
+      <ul>
+        <li><code>**/node_modules</code> — reinstalled fresh inside the (Linux) container; Windows copies would be broken and useless.</li>
+        <li><code>**/dist</code> — regenerated during the Docker build.</li>
+        <li><code>.git</code>, <code>*.log</code>, <code>README.md</code> — not needed in the image.</li>
+      </ul>
+    </section>
+
+    <!-- ===================== SERVER ===================== -->
+    <section id="server">
+      <h2>Server — the API (<code>server/</code>)</h2>
+      <p>Feathers 5 + Express + Mongoose. TypeScript run directly with <code>tsx</code> (no compile step).</p>
+    </section>
+
+    <section id="server-package">
+      <h2><span class="file-path">server/package.json</span> <span class="badge-info">backend manifest</span></h2>
+      <ul>
+        <li><code>start</code> → <code>tsx src/index.ts</code> (production entry, used by Docker).</li>
+        <li><code>dev</code> → <code>tsx watch src/index.ts</code> (auto-restart on file changes).</li>
+        <li><code>build</code> / <code>typecheck</code> → <code>tsc --noEmit</code>.</li>
+      </ul>
+      <table>
+        <tr><th>Dependency</th><th>Role</th></tr>
+        <tr><td>@feathersjs/feathers, express</td><td>Core Feathers + Express framework</td></tr>
+        <tr><td>@feathersjs/express</td><td>Express transport: services over REST, body parsers, static files, error handlers</td></tr>
+        <tr><td>@feathersjs/configuration</td><td>Loads config/default.json into <code>app.get(...)</code></td></tr>
+        <tr><td>@feathersjs/authentication, -local</td><td>JWT + email/password login, password hashing, protect hook</td></tr>
+        <tr><td>feathers-mongoose</td><td>Adapts a Mongoose model into a Feathers service</td></tr>
+        <tr><td>mongoose</td><td>MongoDB ODM — schemas, queries, indexes</td></tr>
+        <tr><td>multer</td><td>Multipart file uploads (profile images)</td></tr>
+        <tr><td>cors</td><td>Allows the Vite dev origin (5173) to call the API (3030)</td></tr>
+      </table>
+    </section>
+
+    <section id="server-tsconfig">
+      <h2><span class="file-path">server/tsconfig.json</span> <span class="badge-info">TypeScript compiler config</span></h2>
+      <ul>
+        <li><code>target: ES2022</code>, <code>module: ESNext</code>, <code>moduleResolution: Bundler</code> — modern ESM settings.</li>
+        <li><code>strict: true</code> — full type safety.</li>
+        <li><code>noEmit: true</code> — tsx runs the code directly; tsc is used purely for checking.</li>
+        <li><code>types: ["node"]</code> — Node.js globals only.</li>
+      </ul>
+    </section>
+
+    <section id="server-config">
+      <h2><span class="file-path">server/config/default.json</span> <span class="badge-info">runtime configuration</span></h2>
+      <p>Read by the <code>configuration()</code> plugin and accessed via <code>app.get('port')</code>, <code>app.get('mongodb')</code>, etc.</p>
+      <ul>
+        <li><code>port: 3030</code> — API port.</li>
+        <li><code>mongodb</code> — local connection string; overridden by the <code>MONGODB_URI</code> env var (Docker).</li>
+        <li><code>authentication</code> — JWT settings: 1-day expiry, HS256, audience <code>https://nepalbipolarfoundation.org</code>, and the <code>local</code> strategy using <code>email</code>/<code>password</code> fields.</li>
+      </ul>
+      <div class="note"><strong>⚠️ Security:</strong> <code>secret</code> is <code>"CHANGE-ME-to-a-long-random-string"</code>. In production this must be replaced with a long random string.</div>
+    </section>
+
+    <section id="server-src-index">
+      <h2><span class="file-path">server/src/index.ts</span> <span class="badge-info">server entry point</span></h2>
+      <p>The file Node executes first. It:</p>
+      <ol>
+        <li>Imports the configured Feathers app from <code>app.ts</code>.</li>
+        <li>Reads the port from config.</li>
+        <li>Connects to MongoDB (<code>process.env.MONGODB_URI || app.get('mongodb')</code>). If MongoDB is down, it prints a clear error and calls <code>process.exit(1)</code>.</li>
+        <li>Calls <code>app.listen(port)</code> and logs readiness.</li>
+      </ol>
+      <p>Everything is wrapped in an <code>async start()</code> so the sequence reads top-to-bottom.</p>
+    </section>
+
+    <section id="server-src-app">
+      <h2><span class="file-path">server/src/app.ts</span> <span class="badge-info">the heart of the server</span></h2>
+      <p>Assembles the Feathers app (which <em>is</em> an Express app). Order matters:</p>
+      <ol>
+        <li><code>configuration()</code> — loads default.json.</li>
+        <li><code>cors()</code> — lets the browser app on port 5173 call the API.</li>
+        <li><code>json()</code> + <code>urlencoded()</code> — body parsers.</li>
+        <li><code>serveStatic('/public')</code> — exposes uploaded images.</li>
+        <li><code>rest()</code> — enables REST transport for services.</li>
+        <li><code>upload</code> — the multer route.</li>
+        <li><code>users</code> then <code>userDetails</code> — the two Feathers services.</li>
+        <li><code>serveStatic(clientDist)</code> — serves the built Vue app in production (env <code>CLIENT_DIST</code> or <code>client/dist</code>).</li>
+        <li><code>authentication</code> — <em>after</em> the users service because it adds security hooks to it.</li>
+        <li><code>notFound()</code> + <code>errorHandler()</code> — 404s and friendly JSON errors last.</li>
+      </ol>
+    </section>
+
+    <section id="server-src-auth">
+      <h2><span class="file-path">server/src/authentication.ts</span> <span class="badge-info">login &amp; JWT security</span></h2>
+      <ul>
+        <li>Creates an <code>AuthenticationService</code> exposed at <code>POST /authentication</code>.</li>
+        <li>Registers two strategies:
+          <ul>
+            <li><strong>local</strong> — proves identity with email + password.</li>
+            <li><strong>jwt</strong> — proves identity with an existing token (for later requests).</li>
+          </ul>
+        </li>
+        <li>Attaches security hooks to the users service:
+          <ul>
+            <li><code>hashPassword('password')</code> on <code>create</code> — bcrypt before saving.</li>
+            <li><code>authenticate('jwt')</code> on <code>find/get/patch/update/remove</code> — every read/write after registration requires a token.</li>
+            <li><code>protect('password')</code> on <code>all</code> (after) — the hash is stripped from every external response.</li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+
+    <section id="server-src-types">
+      <h2><span class="file-path">server/src/types.ts</span> <span class="badge-info">shared server types</span></h2>
+      <ul>
+        <li><code>Configuration</code> — the shape of config/default.json, so <code>app.get('port')</code> is typed as <code>number</code>.</li>
+        <li><code>ServiceTypes</code> — the registry of services (<code>users</code>, <code>user-details</code>, <code>authentication</code>). <code>users</code>/<code>user-details</code> are typed <code>any</code> because feathers-mongoose doesn't ship types yet.</li>
+        <li><code>Application</code> — <code>ExpressFeathers&lt;ServiceTypes, Configuration&gt;</code>, the fully typed app used across the codebase.</li>
+      </ul>
+    </section>
+
+    <section id="server-src-upload">
+      <h2><span class="file-path">server/src/upload.ts</span> <span class="badge-info">profile image uploads</span></h2>
+      <p>A plain Express route (not a Feathers service — totally fine, they mix freely).</p>
+      <ul>
+        <li>Uses <strong>multer</strong> with <code>diskStorage</code>, saving into <code>server/public/uploads/</code> (created recursively on first use).</li>
+        <li>Filenames are unique: <code>avatar-&lt;timestamp&gt;-&lt;random&gt;.&lt;ext&gt;</code>, so two users can't overwrite each other.</li>
+        <li>Only safe image extensions are kept (<code>.jpg/.jpeg/.png/.gif/.webp</code>); anything else falls back to <code>.jpg</code>.</li>
+        <li>Limits: one file, 2 MB max, MIME must start with <code>image/</code>.</li>
+        <li>On success it returns <code>{ url: "http://host/public/uploads/avatar-...jpg" }</code>, which the client stores on the user record.</li>
+      </ul>
+    </section>
+
+    <section id="server-users">
+      <h2><span class="file-path">server/src/services/users/</span> <span class="badge-info">the /users service</span></h2>
+
+      <h3>users.types.ts</h3>
+      <p>The <code>User</code> TypeScript interface. Note it <em>includes</em> <code>age</code> and <code>city</code> even though they aren't stored on the document — hooks re-attach them so the API shape is stable.</p>
+
+      <h3>users.model.ts</h3>
+      <p>The Mongoose schema: <code>name</code> (required), <code>email</code> (required, unique index, lowercase+trimmed — the login username), <code>password</code> (required, stored hashed), <code>avatar</code> (nullable string). Timestamps enabled. Collection name: <code>users</code>.</p>
+
+      <h3>users.service.ts</h3>
+      <p>Makes <code>users</code> a Feathers service (auto REST endpoints) and implements the <strong>two-collection sync</strong>:</p>
+      <ul>
+        <li><strong>extractDetails</strong> (before create/patch) — if <code>age</code> or <code>city</code> was sent, pull it out of the user data and stash it on <code>context.params._userDetails</code>.</li>
+        <li><strong>saveDetails</strong> (after create/patch) — writes/updates the row in <code>user_details</code> (creates it on first registration).</li>
+        <li><strong>attachDetails</strong> (after find/get/patch) — reads the details row back and adds <code>age</code>/<code>city</code> to every returned user, so responses look unchanged.</li>
+        <li><strong>removeDetails</strong> (after remove) — deletes the details row so no orphans remain.</li>
+      </ul>
+      <p>There's also a small runtime type-cast for feathers-mongoose (a CommonJS package whose shipped types describe the default differently than reality).</p>
+    </section>
+
+    <section id="server-details">
+      <h2><span class="file-path">server/src/services/user-details/</span> <span class="badge-info">the /user-details service</span></h2>
+
+      <h3>user-details.types.ts</h3>
+      <p>The <code>UserDetails</code> interface: <code>userId</code> (an ObjectId back to users), nullable <code>age</code> and <code>city</code>, plus timestamps.</p>
+
+      <h3>user-details.model.ts</h3>
+      <p>Schema with a <strong>unique</strong> <code>userId</code> index (one details row per user), explicit collection name <code>user_details</code>, timestamps on.</p>
+
+      <h3>user-details.service.ts</h3>
+      <p>Exposes the collection as a Feathers service and locks every method down with <code>authenticate('jwt')</code>. The client never calls it directly — the <code>/users</code> hooks are its only real consumer. (Internal hook calls have no <code>provider</code>, so they bypass the auth hook.)</p>
+    </section>
+
+    <!-- ===================== CLIENT ===================== -->
+    <section id="client">
+      <h2>Client — the frontend (<code>client/</code>)</h2>
+      <p>Vue 3 (Composition API, <code>&lt;script setup&gt;</code>) + Vite + Pinia + the Feathers REST client. TypeScript everywhere.</p>
+    </section>
+
+    <section id="client-package">
+      <h2><span class="file-path">client/package.json</span> <span class="badge-info">frontend manifest</span></h2>
+      <ul>
+        <li><code>dev</code> → <code>vite</code>; <code>build</code> → <code>vue-tsc --noEmit &amp;&amp; vite build</code> (type-check then bundle); <code>typecheck</code> → <code>vue-tsc --noEmit</code>.</li>
+        <li><strong>vue</strong> — the framework; <strong>pinia</strong> — the reactive store; <strong>@feathersjs/feathers, rest-client, authentication-client</strong> — API access and JWT handling; <strong>@vue/devtools-api</strong> — devtools support.</li>
+        <li>Dev: <strong>vite</strong>, <strong>@vitejs/plugin-vue</strong> (.vue files), <strong>vue-tsc</strong> (typed templates).</li>
+      </ul>
+    </section>
+
+    <section id="client-index">
+      <h2><span class="file-path">client/index.html</span> <span class="badge-info">SPA shell</span></h2>
+      <p>The only HTML file. Contains a favicon (an inline SVG green circle with an "N"), an empty <code>&lt;div id="app"&gt;</code> where Vue mounts, and a <code>&lt;script type="module" src="/src/main.ts"&gt;</code> entry.</p>
+    </section>
+
+    <section id="client-vite">
+      <h2><span class="file-path">client/vite.config.ts</span> <span class="badge-info">Vite configuration</span></h2>
+      <p>Registers the Vue plugin and pins the dev server to <code>127.0.0.1:5173</code> with <code>strictPort: true</code> — the browser always hits the same URL (no silent port jumps, and CORS in dev stays predictable).</p>
+    </section>
+
+    <section id="client-tsconfig">
+      <h2><span class="file-path">client/tsconfig.json, tsconfig.app.json, tsconfig.node.json</span> <span class="badge-info">TypeScript project references</span></h2>
+      <ul>
+        <li>The root <code>tsconfig.json</code> has no files of its own; it just points at two sub-projects.</li>
+        <li><strong>tsconfig.app.json</strong> — settings for the browser app (<code>src/**</code>): DOM libs, <code>strict</code>, Vite client types, JSX preserved for templates.</li>
+        <li><strong>tsconfig.node.json</strong> — settings for Node-side tooling (just <code>vite.config.ts</code>).</li>
+      </ul>
+    </section>
+
+    <section id="client-src-main">
+      <h2><span class="file-path">client/src/main.ts</span> <span class="badge-info">bootstrap</span></h2>
+      <p>Creates the Vue app, installs Pinia, and mounts into <code>#app</code>. Importing <code>'./feathers'</code> is a side-effect import — it configures the shared API client exactly once.</p>
+    </section>
+
+    <section id="client-src-feathers">
+      <h2><span class="file-path">client/src/feathers.ts</span> <span class="badge-info">the shared API client</span></h2>
+      <p>The single place that talks to the server from the browser:</p>
+      <ul>
+        <li>Defines the <code>User</code> interface and typed <code>ServiceTypes</code>, so <code>feathers.service('users').create(...)</code> is fully type-checked.</li>
+        <li><code>SERVER_URL = import.meta.env.VITE_SERVER_URL ?? 'http://localhost:3030'</code> — dev points at the API; in the Docker build the env var is empty so the SPA calls its own origin.</li>
+        <li>Configures the REST client. Note the <code>fetch(url, init) =&gt; fetch(url, init)</code> wrapper: the browser requires <code>fetch</code> to be invoked with <code>window</code> as <code>this</code>, otherwise it throws "Illegal invocation".</li>
+        <li>Enables authentication with <code>localStorage</code> as storage — the JWT survives page refreshes.</li>
+      </ul>
+    </section>
+
+    <section id="client-src-app">
+      <h2><span class="file-path">client/src/App.vue</span> <span class="badge-info">root component / page switcher</span></h2>
+      <p>Reads <code>auth.isAuthenticated</code> from the Pinia store:</p>
+      <ul>
+        <li><strong>Not logged in</strong> → a centered brand header plus either <code>Login.vue</code> or <code>Register.vue</code> (switched by a local <code>showRegister</code> ref fed by the <code>go-register</code>/<code>go-login</code> events).</li>
+        <li><strong>Logged in</strong> → <code>Dashboard.vue</code>.</li>
+      </ul>
+      <p>On mount it calls <code>auth.restore()</code> to validate any saved JWT and pre-fill the session. Because the store is reactive, the whole screen swap happens automatically when <code>auth.user</code> changes — no router is needed. Also holds the global stylesheet (body background, fonts, green brand color).</p>
+    </section>
+
+    <section id="client-store">
+      <h2><span class="file-path">client/src/stores/auth.ts</span> <span class="badge-info">Pinia auth store</span></h2>
+      <p>The single source of truth for the logged-in user:</p>
+      <ul>
+        <li><strong>state</strong> — <code>user</code> (User | null).</li>
+        <li><strong>getters</strong> — <code>isAuthenticated</code> (true when <code>user !== null</code>).</li>
+        <li><strong>actions</strong>:
+          <ul>
+            <li><code>restore()</code> — calls <code>feathers.reAuthenticate()</code> to validate a saved JWT and fill <code>user</code>; on failure stays logged out.</li>
+            <li><code>login(email, password)</code> — <code>feathers.authenticate({ strategy: 'local', ... })</code> then stores the user.</li>
+            <li><code>logout()</code> — clears the token and user.</li>
+            <li><code>updateUser(user)</code> — refreshes the stored user after a profile save.</li>
+          </ul>
+        </li>
+      </ul>
+      <div class="tip">Because the store is reactive, changing <code>user</code> here re-renders every component that reads it — App.vue, Dashboard, Profile.</div>
+    </section>
+
+    <section id="client-login">
+      <h2><span class="file-path">client/src/components/Login.vue</span> <span class="badge-info">login form</span></h2>
+      <p>A simple email/password form bound with <code>v-model</code> (email is trimmed + lowercased before sending). On submit it calls <code>auth.login(...)</code>; success fills <code>auth.user</code> and App.vue auto-switches to the Dashboard — <em>nothing needs to be emitted up</em>. Errors are shown in reserved space so the layout doesn't jump; the button is disabled while loading. The only event is <code>go-register</code> to switch screens.</p>
+    </section>
+
+    <section id="client-register">
+      <h2><span class="file-path">client/src/components/Register.vue</span> <span class="badge-info">registration form</span></h2>
+      <p>Registration with an optional profile photo. On submit:</p>
+      <ol>
+        <li><strong>Client-side validation</strong> — required fields, password ≥ 6 chars, password &amp; confirm must match.</li>
+        <li><strong>Upload</strong> (if a file was picked) — sends <code>FormData</code> with field <code>image</code> to <code>POST {SERVER_URL}/upload</code> and gets back the public URL. A live preview shows the chosen image first.</li>
+        <li><strong>Create</strong> — <code>feathers.service('users').create({ name, email, password, avatar })</code>. The server hashes the password.</li>
+        <li><strong>Auto-login</strong> — calls <code>auth.login(...)</code>, which drops the user straight onto the Dashboard.</li>
+      </ol>
+      <p>Duplicate emails are caught by looking for a <code>409</code> status or a "duplicate" message and showing a friendly hint.</p>
+    </section>
+
+    <section id="client-dashboard">
+      <h2><span class="file-path">client/src/components/Dashboard.vue</span> <span class="badge-info">logged-in shell</span></h2>
+      <p>Two-panel layout: a dark-green sidebar (title, menu buttons <strong>Users</strong> and <strong>Profile</strong>, red <strong>Log out</strong> button) and a main content area that swaps between the selected component based on a local <code>activeMenu</code> ref. Logout simply calls <code>auth.logout()</code>, which empties the store and pops the UI back to the login screen.</p>
+    </section>
+
+    <section id="client-users">
+      <h2><span class="file-path">client/src/components/UsersAdmin.vue</span> <span class="badge-info">user CRUD page</span></h2>
+      <p>The biggest component. Full CRUD over the users service:</p>
+      <ul>
+        <li><strong>Read</strong> — <code>loadUsers()</code> calls <code>users.find()</code> (GET /users) on mount and renders a table (avatar thumbnail or initials, name, email, age, city, join date, actions).</li>
+        <li><strong>Create</strong> — "Add user" opens a modal form → <code>users.create()</code>.</li>
+        <li><strong>Update</strong> — "Edit" opens the same modal prefilled (email is locked when editing because it's the login username) → <code>users.patch(id, {...})</code>. Age is parsed to a number or null; only a new password is required on create.</li>
+        <li><strong>Delete</strong> — "Delete" asks for <code>window.confirm()</code> then calls <code>users.remove(id)</code>.</li>
+      </ul>
+      <p>After every mutation it reloads the table and shows a status message; duplicate-email errors map to a friendly hint.</p>
+    </section>
+
+    <section id="client-profile">
+      <h2><span class="file-path">client/src/components/Profile.vue</span> <span class="badge-info">profile page</span></h2>
+      <p>Shows the logged-in user's photo (or initials placeholder), name, and read-only email. The user can:</p>
+      <ul>
+        <li>Change their photo — upload to <code>/upload</code> then <code>users.patch(id, { avatar })</code>.</li>
+        <li>Change their name — <code>users.patch(id, { name })</code>.</li>
+        <li>Log out.</li>
+      </ul>
+      <p>Only changed fields are sent. After a successful save it calls <code>auth.updateUser(updated)</code> so every screen reflects the new data, then shows "Profile saved."</p>
+    </section>
+
+    <section id="client-env">
+      <h2><span class="file-path">client/src/vite-env.d.ts</span> <span class="badge-info">Vite ambient types</span></h2>
+      <p>A one-liner that references Vite's client types, giving you typed access to <code>import.meta.env</code> (used for <code>VITE_SERVER_URL</code>) and CSS imports.</p>
+    </section>
+
+    <!-- ===================== SUMMARY ===================== -->
+    <section id="summary">
+      <h2>Key takeaways</h2>
+      <ul>
+        <li><strong>One command to run:</strong> <code>npm run dev</code> locally or <code>docker compose up --build</code> for the full stack.</li>
+        <li><strong>Feathers powers everything:</strong> services auto-become REST endpoints, hooks handle security and the two-collection sync, and the same client library mirrors the server in the browser.</li>
+        <li><strong>Passwords are never stored or returned</strong> in plain text — <code>hashPassword</code> and <code>protect</code> hooks enforce it server-side.</li>
+        <li><strong>The data model is normalized</strong> behind the API: <code>users</code> + <code>user_details</code>, kept in sync by the users service hooks.</li>
+        <li><strong>Dev vs. prod:</strong> Vite serves the client in dev (port 5173, CORS to 3030); in the Docker image the Feathers server serves the built SPA from the same origin (3030).</li>
+      </ul>
+    </section>
+
+  </main>
+</div>
+
+<footer style="text-align:center; padding: 2rem; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border);">
+  Nepal Bipolar Foundation — auto-generated project documentation.
+</footer>
+
+</body>
+</html>

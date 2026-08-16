@@ -1,0 +1,12 @@
+# Files/folders Docker must NOT copy into the image.
+# node_modules are installed fresh inside the build (Linux), so the
+# Windows copies would be both useless and broken inside the container.
+**/node_modules
+
+# Build output is regenerated during the Docker build.
+**/dist
+
+# Not needed in the image.
+.git
+*.log
+README.md

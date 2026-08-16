@@ -1,0 +1,37 @@
+# ============================================================
+# docker-compose.yml — runs the whole stack with one command:
+#
+#   docker compose up --build
+#
+# Two containers:
+#   - mongo: the database the app stores its data in.
+#   - app:   the full-stack image built by the Dockerfile
+#            (Vue frontend + Feathers API together on port 3030).
+#
+# The app container tells the server which MongoDB to use through
+# the MONGODB_URI environment variable (server/src/index.ts reads it).
+# ============================================================
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      # Keep the database data on your machine, not inside the container,
+      # so it survives `docker compose down`.
+      - mongo-data:/data/db
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    environment:
+      # The `mongo` hostname resolves to the MongoDB container above.
+      - MONGODB_URI=mongodb://mongo:27017/nepal-bipolar-foundation
+    ports:
+      # Expose the app (frontend + API) on http://localhost:3030.
+      - "3030:3030"
+
+volumes:
+  mongo-data:

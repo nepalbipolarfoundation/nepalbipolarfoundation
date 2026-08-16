@@ -1,0 +1,11 @@
+{
+  "name": "nepal-bipolar-foundation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Nepal Bipolar Foundation — run the API server and Vue client together with a single command.",
+  "scripts": {
+    "dev": "node dev.mjs",
+    "start": "node dev.mjs",
+    "typecheck": "npm run typecheck --prefix server && npm run typecheck --prefix client"
+  }
+}

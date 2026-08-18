@@ -6,9 +6,7 @@
   "scripts": {
     "dev": "node dev.mjs",
     "start": "node dev.mjs",
+    "build": "npm install --prefix client && npm run build --prefix client",
     "typecheck": "npm run typecheck --prefix server && npm run typecheck --prefix client"
   }
-  "dependencies": {
-  "@vue/cli-service": "^5.0.0"
-}
 }

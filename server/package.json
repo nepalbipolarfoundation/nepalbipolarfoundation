@@ -20,7 +20,8 @@
     "express": "^4.21.2",
     "feathers-mongoose": "^8.0.0",
     "mongoose": "^8.0.0",
-    "multer": "^2.0.0"
+    "multer": "^2.0.0",
+     "@vue/cli-service": "^5.0.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

@@ -22,6 +22,7 @@ export interface User {
   avatar: string | null
   age: number | null
   city: string | null
+  roles: string[]
   createdAt: string
   updatedAt: string
 }
@@ -31,8 +32,8 @@ export interface User {
 export interface ServiceTypes {
   users: {
     find(): Promise<User[]>
-    create(data: { name: string; email: string; password: string; avatar?: string | null; age?: number | null; city?: string | null }): Promise<User>
-    patch(id: string, data: Partial<Pick<User, 'name' | 'avatar' | 'age' | 'city'>>): Promise<User>
+    create(data: { name: string; email: string; password: string; avatar?: string | null; age?: number | null; city?: string | null; roles?: string[] }): Promise<User>
+    patch(id: string, data: Partial<Pick<User, 'name' | 'avatar' | 'age' | 'city' | 'roles'>>): Promise<User>
     remove(id: string): Promise<User>
   }
   authentication: {

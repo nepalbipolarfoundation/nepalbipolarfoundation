@@ -27,6 +27,9 @@ export const createModel = (): Model<User> => {
     // Public URL of the uploaded profile image (may be null)
     avatar: { type: String, default: null },
 
+    // Role-based access control — array of role strings (e.g. ["admin", "editor"])
+    roles: { type: [String], default: [] },
+
     // NOTE: age and city are NOT stored here anymore. They live in
     // the separate "user_details" collection (see user-details.model.js).
     // The /users service hooks move them in/out automatically.

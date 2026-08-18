@@ -1,15 +1,15 @@
 <!-- ============================================================
   UsersAdmin.vue — The "Users" page of the dashboard.
-  Fetches every user from GET /users and shows them in a table,
-  with full CRUD support:
-    - Create: "Add user" opens a form (POST /users)
-    - Read:   the table lists all users (GET /users)
-    - Update: "Edit" opens the form prefilled (PATCH /users/:id)
-    - Delete: "Delete" asks for confirmation (DELETE /users/:id)
+  Admins see all users and can add new ones.
+  Non-admins see only their own profile.
 ============================================================ -->
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import feathers, { type User } from '../feathers'
+import { useAuthStore } from '../stores/auth'
+
+const auth = useAuthStore()
+
 
 // ---- Table state ----
 const users = ref<User[]>([])
@@ -17,26 +17,40 @@ const loading = ref(true)
 const error = ref('')
 const message = ref('')
 
-// ---- Modal / form state ----
-// editingId === null → we are creating a new user, otherwise editing that one.
+// ---- Edit modal state ----
 const editingId = ref<string | null>(null)
-const showModal = ref(false)
+const showEditModal = ref(false)
 const saving = ref(false)
-const formError = ref('')
-const form = ref({
+const editFormError = ref('')
+const editForm = ref({
+  name: '',
+  email: '',
+  age: '',
+  city: '',
+})
+
+// ---- Create modal state ----
+const showCreateModal = ref(false)
+const creating = ref(false)
+const createFormError = ref('')
+const createForm = ref({
   name: '',
   email: '',
   password: '',
   age: '',
   city: '',
+  roles: '',
 })
 
 async function loadUsers(): Promise<void> {
   loading.value = true
   error.value = ''
   try {
-    // GET /users — the server returns an array (pagination is off).
-    users.value = await feathers.service('users').find()
+    const all = await feathers.service('users').find()
+    // Admins see all users; non-admins see only themselves.
+    users.value = auth.isAdmin
+      ? all
+      : all.filter((u: User) => u._id === auth.user?._id)
   } catch (e) {
     error.value = e instanceof Error ? e.message : 'Could not load users.'
   } finally {
@@ -46,67 +60,44 @@ async function loadUsers(): Promise<void> {
 
 onMounted(loadUsers)
 
-// Show the "Add user" modal (empty form).
-function openCreate(): void {
-  editingId.value = null
-  form.value = { name: '', email: '', password: '', age: '', city: '' }
-  formError.value = ''
-  showModal.value = true
-}
-
-// Show the "Edit user" modal, prefilled from the row.
+// ---- Edit user ----
 function openEdit(u: User): void {
   editingId.value = u._id
-  form.value = {
+  editForm.value = {
     name: u.name,
     email: u.email,
-    password: '',
     age: u.age === null || u.age === undefined ? '' : String(u.age),
     city: u.city ?? '',
   }
-  formError.value = ''
-  showModal.value = true
+  editFormError.value = ''
+  showEditModal.value = true
 }
 
-// Create (POST) or update (PATCH) a user, then refresh the table.
-async function save(): Promise<void> {
-  formError.value = ''
-  if (!form.value.name.trim() || !form.value.email.trim()) {
-    formError.value = 'Name and email are required.'
-    return
-  }
-  if (!editingId.value && form.value.password.length < 6) {
-    formError.value = 'Password must be at least 6 characters.'
+async function saveEdit(): Promise<void> {
+  editFormError.value = ''
+  if (!editForm.value.name.trim() || !editForm.value.email.trim()) {
+    editFormError.value = 'Name and email are required.'
     return
   }
 
   saving.value = true
   try {
-    const parsedAge = form.value.age === '' ? null : Number(form.value.age)
+    const parsedAge = editForm.value.age === '' ? null : Number(editForm.value.age)
     const age = parsedAge === null || Number.isNaN(parsedAge) ? null : parsedAge
     const base = {
-      name: form.value.name.trim(),
+      name: editForm.value.name.trim(),
       age,
-      city: form.value.city.trim() || null,
+      city: editForm.value.city.trim() || null,
     }
 
-    if (editingId.value) {
-      await feathers.service('users').patch(editingId.value, base)
-      message.value = 'User updated.'
-    } else {
-      await feathers.service('users').create({
-        ...base,
-        email: form.value.email.trim().toLowerCase(),
-        password: form.value.password,
-      })
-      message.value = 'User created.'
-    }
+    await feathers.service('users').patch(editingId.value!, base)
+    message.value = 'User updated.'
 
-    showModal.value = false
+    showEditModal.value = false
     await loadUsers()
   } catch (e) {
     const msg = e instanceof Error ? e.message : ''
-    formError.value = /duplicate/i.test(msg)
+    editFormError.value = /duplicate/i.test(msg)
       ? 'That email is already registered.'
       : msg || 'Could not save user.'
   } finally {
@@ -114,15 +105,54 @@ async function save(): Promise<void> {
   }
 }
 
-// Delete a user after confirmation (DELETE /users/:id).
-async function removeUser(u: User): Promise<void> {
-  if (!window.confirm(`Delete "${u.name}" (${u.email})? This cannot be undone.`)) return
+// ---- Create user (admin only) ----
+function openCreate(): void {
+  createForm.value = { name: '', email: '', password: '', age: '', city: '', roles: '' }
+  createFormError.value = ''
+  showCreateModal.value = true
+}
+
+async function createUser(): Promise<void> {
+  createFormError.value = ''
+  if (!createForm.value.name.trim() || !createForm.value.email.trim() || !createForm.value.password) {
+    createFormError.value = 'Name, email and password are required.'
+    return
+  }
+  if (createForm.value.password.length < 6) {
+    createFormError.value = 'Password must be at least 6 characters.'
+    return
+  }
+
+  creating.value = true
   try {
-    await feathers.service('users').remove(u._id)
-    message.value = 'User deleted.'
+    const parsedAge = createForm.value.age === '' ? null : Number(createForm.value.age)
+    const age = parsedAge === null || Number.isNaN(parsedAge) ? null : parsedAge
+    const roles = createForm.value.roles
+      ? createForm.value.roles.split(',').map(r => r.trim()).filter(Boolean)
+      : []
+
+    await feathers.service('users').create({
+      name: createForm.value.name.trim(),
+      email: createForm.value.email.trim().toLowerCase(),
+      password: createForm.value.password,
+      age,
+      city: createForm.value.city.trim() || null,
+      roles,
+    })
+
+    message.value = 'User created successfully.'
+    showCreateModal.value = false
     await loadUsers()
   } catch (e) {
-    error.value = e instanceof Error ? e.message : 'Could not delete user.'
+    const msg = e instanceof Error ? e.message : ''
+    const code = (e as { code?: number }).code
+    if (code === 409 || /duplicate/i.test(msg)) {
+      createFormError.value = 'That email is already registered.'
+    } else {
+      createFormError.value = msg || 'Could not create user.'
+    }
+  } finally {
+    creating.value = false
   }
 }
 
@@ -140,10 +170,10 @@ function formatDate(value: string): string {
 
 <template>
   <section>
-    <!-- Header row with the "Add user" action (Create) -->
+    <!-- Header row with the "Add user" action (admin only) -->
     <div class="toolbar">
-      <h2>Users</h2>
-      <button class="primary" @click="openCreate">Add user</button>
+      <h2>{{ auth.isAdmin ? 'Users' : 'My Profile' }}</h2>
+      <button v-if="auth.isAdmin" class="primary" @click="openCreate">+ Add User</button>
     </div>
 
     <p class="error" v-if="error">{{ error }}</p>
@@ -162,11 +192,12 @@ function formatDate(value: string): string {
             <th>Age</th>
             <th>City</th>
             <th>Joined</th>
+            <th>Roles</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="u in users" :key="u._id">
+          <tr v-for="u in users" :key="u._id" :class="{ 'current-user': u._id === auth.user?._id }">
             <td>
               <img v-if="u.avatar" :src="u.avatar" class="thumb" alt="" />
               <span v-else class="thumb placeholder">{{ initials(u) }}</span>
@@ -176,45 +207,74 @@ function formatDate(value: string): string {
             <td>{{ u.age ?? '—' }}</td>
             <td>{{ u.city || '—' }}</td>
             <td>{{ formatDate(u.createdAt) }}</td>
+             <td>{{ u.roles.join(', ') || '—' }}</td>
             <td class="actions">
               <button class="edit" @click="openEdit(u)">Edit</button>
-              <button class="danger" @click="removeUser(u)">Delete</button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <p class="hint" v-else>No users yet. Click "Add user" to create the first one.</p>
+    <p class="hint" v-else>No user data found.</p>
 
-    <!-- Create / Update modal -->
-    <div v-if="showModal" class="overlay" @click.self="showModal = false">
+    <!-- Edit modal -->
+    <div v-if="showEditModal" class="overlay" @click.self="showEditModal = false">
       <div class="modal">
-        <h3>{{ editingId ? 'Edit user' : 'Add user' }}</h3>
-        <form @submit.prevent="save">
+        <h3>Edit user</h3>
+        <form @submit.prevent="saveEdit">
           <label for="u-name">Name</label>
-          <input id="u-name" v-model.trim="form.name" type="text" required />
+          <input id="u-name" v-model.trim="editForm.name" type="text" required />
 
           <label for="u-email">Email</label>
-          <!-- Email is fixed when editing (it is the login username) -->
-          <input id="u-email" v-model.trim="form.email" type="email" required :disabled="!!editingId" />
-
-          <template v-if="!editingId">
-            <label for="u-password">Password (min 6 characters)</label>
-            <input id="u-password" v-model="form.password" type="password" required />
-          </template>
+          <input id="u-email" v-model.trim="editForm.email" type="email" required disabled />
 
           <label for="u-age">Age</label>
-          <input id="u-age" v-model="form.age" type="number" min="0" max="150" />
+          <input id="u-age" v-model="editForm.age" type="number" min="0" max="150" />
 
           <label for="u-city">City</label>
-          <input id="u-city" v-model.trim="form.city" type="text" />
+          <input id="u-city" v-model.trim="editForm.city" type="text" />
 
-          <p class="error">{{ formError }}</p>
+          <p class="error">{{ editFormError }}</p>
 
           <div class="modal-actions">
-            <button type="button" class="ghost" @click="showModal = false">Cancel</button>
+            <button type="button" class="ghost" @click="showEditModal = false">Cancel</button>
             <button type="submit" class="primary" :disabled="saving">
               {{ saving ? 'Saving...' : 'Save' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Create user modal (admin only) -->
+    <div v-if="showCreateModal" class="overlay" @click.self="showCreateModal = false">
+      <div class="modal">
+        <h3>Add new user</h3>
+        <form @submit.prevent="createUser">
+          <label for="c-name">Name</label>
+          <input id="c-name" v-model.trim="createForm.name" type="text" placeholder="Full name" required />
+
+          <label for="c-email">Email</label>
+          <input id="c-email" v-model.trim="createForm.email" type="email" placeholder="user@example.com" required />
+
+          <label for="c-password">Password</label>
+          <input id="c-password" v-model="createForm.password" type="password" placeholder="Min 6 characters" required />
+
+          <label for="c-age">Age</label>
+          <input id="c-age" v-model="createForm.age" type="number" min="0" max="150" />
+
+          <label for="c-city">City</label>
+          <input id="c-city" v-model.trim="createForm.city" type="text" placeholder="e.g. Kathmandu" />
+
+          <label for="c-roles">Roles</label>
+          <input id="c-roles" v-model.trim="createForm.roles" type="text" placeholder="e.g. admin, editor (comma-separated)" />
+
+          <p class="error">{{ createFormError }}</p>
+
+          <div class="modal-actions">
+            <button type="button" class="ghost" @click="showCreateModal = false">Cancel</button>
+            <button type="submit" class="primary" :disabled="creating">
+              {{ creating ? 'Creating...' : 'Create User' }}
             </button>
           </div>
         </form>
@@ -272,6 +332,24 @@ th {
 }
 tbody tr:last-child td {
   border-bottom: none;
+}
+tbody tr.current-user {
+  background: #e8f5e9;
+}
+tbody tr.current-user td:first-child {
+  position: relative;
+}
+tbody tr.current-user td:first-child::before {
+  /* content: 'You'; */
+  position: absolute;
+  top: -0.2rem;
+  right: -0.2rem;
+  background: #2e7d32;
+  color: #fff;
+  font-size: 0.65rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-weight: 600;
 }
 .thumb {
   width: 36px;

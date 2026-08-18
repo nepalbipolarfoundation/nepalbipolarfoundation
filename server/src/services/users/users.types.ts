@@ -17,4 +17,5 @@ export interface User {
   city: string | null
   createdAt: string
   updatedAt: string
+  roles: string[]
 }

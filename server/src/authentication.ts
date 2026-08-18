@@ -11,10 +11,22 @@
 
 import { AuthenticationService, JWTStrategy, authenticate } from '@feathersjs/authentication'
 import { LocalStrategy, hooks as localHooks } from '@feathersjs/authentication-local'
+import type { HookContext } from '@feathersjs/feathers'
 import type { Application } from './types.js'
 
 // Feathers 5 keeps these security hooks under the "hooks" export.
 const { hashPassword, protect } = localHooks
+
+// Only admins may set or change roles. Non-admin requests silently
+// have the roles field stripped so it is never saved.
+const restrictRoles = (context: HookContext): void => {
+  const userRoles = (context.params.user as any)?.roles as string[] | undefined
+  if (!userRoles || !userRoles.includes('admin')) {
+    if (context.data && typeof context.data === 'object' && !Array.isArray(context.data)) {
+      delete (context.data as Record<string, unknown>).roles
+    }
+  }
+}
 
 export const authentication = (app: Application): void => {
   // Create the authentication service and expose it at POST /authentication
@@ -34,12 +46,14 @@ export const authentication = (app: Application): void => {
     before: {
       // hashPassword: turn the plain-text password into a bcrypt hash
       // BEFORE it is saved. We never store plain passwords!
-      create: [hashPassword('password')],
+      // restrictRoles: only admins may assign roles on create/update.
+      create: [hashPassword('password'), authenticate('jwt'), restrictRoles],
       // Only logged-in users may list users (dashboard) or view a user.
       find: [authenticate('jwt')],
       get: [authenticate('jwt')],
       // Only logged-in users may update their profile.
-      patch: [authenticate('jwt')],
+      // restrictRoles: non-admins cannot escalate their own roles.
+      patch: [authenticate('jwt'), restrictRoles],
       update: [authenticate('jwt')],
       remove: [authenticate('jwt')],
     },

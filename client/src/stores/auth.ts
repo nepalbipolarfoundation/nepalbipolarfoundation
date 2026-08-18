@@ -29,6 +29,8 @@ export const useAuthStore = defineStore('auth', {
   getters: {
     // true when someone is logged in (handy for v-if in templates).
     isAuthenticated: (state): boolean => state.user !== null,
+    // true when the current user has the 'admin' role.
+    isAdmin: (state): boolean => state.user?.roles.includes('admin') ?? false,
   },
 
   actions: {

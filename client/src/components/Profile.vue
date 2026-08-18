@@ -20,6 +20,8 @@ const user = computed(() => auth.user!)
 
 // ---- Local form state, prefilled from the user object ----
 const name = ref(user.value.name)
+const age = ref(user.value.age === null || user.value.age === undefined ? '' : String(user.value.age))
+const city = ref(user.value.city ?? '')
 const avatarFile = ref<File | null>(null)
 const preview = ref(user.value.avatar) // current photo (or null)
 const saving = ref(false)
@@ -61,12 +63,21 @@ async function save(): Promise<void> {
   message.value = ''
   try {
     // Build the list of changes. Only changed fields are sent.
-    const updates: Partial<Pick<User, 'name' | 'avatar'>> = {}
+    const updates: Partial<Pick<User, 'name' | 'avatar' | 'age' | 'city'>> = {}
     if (name.value !== user.value.name) updates.name = name.value
     if (avatarFile.value) {
       updates.avatar = await uploadImage()
       preview.value = updates.avatar // show the uploaded photo
     }
+
+    // Handle age
+    const parsedAge = age.value === '' ? null : Number(age.value)
+    const newAge = parsedAge === null || Number.isNaN(parsedAge) ? null : parsedAge
+    if (newAge !== user.value.age) updates.age = newAge
+
+    // Handle city
+    const newCity = city.value.trim() || null
+    if (newCity !== (user.value.city ?? null)) updates.city = newCity
 
     if (Object.keys(updates).length > 0) {
       // PATCH /users/:id — the server requires a valid JWT for this.
@@ -101,9 +112,15 @@ async function logout(): Promise<void> {
     <label for="name">Name</label>
     <input id="name" v-model.trim="name" type="text" />
 
-    <!-- Email is read-only in this minimum version -->
+    <!-- Email is read-only -->
     <label for="email">Email</label>
     <input id="email" :value="user.email" type="email" disabled />
+
+    <label for="age">Age</label>
+    <input id="age" v-model="age" type="number" min="0" max="150" />
+
+    <label for="city">City</label>
+    <input id="city" v-model.trim="city" type="text" />
 
     <p class="message">{{ message }}</p>
 

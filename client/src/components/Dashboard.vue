@@ -1,11 +1,7 @@
 <!-- ============================================================
-  Dashboard.vue — The logged-in admin shell.
-  Layout:
-    - Sidebar menu (Users, Profile) + logout button.
-    - Main content area, which swaps between the selected menu.
-
-  The logged-in user lives in the Pinia auth store, so the sidebar
-  reads `auth.user` and logout simply calls `auth.logout()`.
+  Dashboard.vue — The logged-in user dashboard.
+  Shows the logged-in user's details in a table and provides
+  a logout button.
 ============================================================ -->
 <script setup lang="ts">
 import { ref } from 'vue'
@@ -20,7 +16,7 @@ const auth = useAuthStore()
 const activeMenu = ref<'users' | 'profile'>('users')
 
 async function logout(): Promise<void> {
-  await auth.logout() // store clears the user → App.vue shows the login screen
+  await auth.logout()
 }
 </script>
 
@@ -28,26 +24,26 @@ async function logout(): Promise<void> {
   <div class="dashboard">
     <aside class="sidebar">
       <h2>Dashboard</h2>
-      <nav>
-        <button
+         
+        <button class="user"
           :class="{ active: activeMenu === 'users' }"
           @click="activeMenu = 'users'"
         >
-          Users
+        {{ auth.isAdmin ? 'Users' : 'User' }}
         </button>
-        <button
+        <button class="profile"
           :class="{ active: activeMenu === 'profile' }"
           @click="activeMenu = 'profile'"
         >
           Profile
         </button>
-      </nav>
+      
       <button class="logout" @click="logout">Log out</button>
     </aside>
 
     <main class="content">
       <UsersAdmin v-if="activeMenu === 'users'" />
-      <Profile v-else />
+      <Profile v-else-if="activeMenu === 'profile'" />
     </main>
   </div>
 </template>
@@ -71,30 +67,6 @@ async function logout(): Promise<void> {
   margin: 0;
   font-size: 1.1rem;
 }
-.sidebar nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  flex: 1;
-}
-.sidebar nav button {
-  text-align: left;
-  padding: 0.6rem 0.8rem;
-  border: none;
-  border-radius: 8px;
-  background: transparent;
-  color: #dcebe0;
-  font-size: 0.95rem;
-  cursor: pointer;
-}
-.sidebar nav button:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-.sidebar nav button.active {
-  background: #2e7d32;
-  color: #fff;
-  font-weight: 600;
-}
 .sidebar .logout {
   padding: 0.6rem 0.8rem;
   border: none;
@@ -108,5 +80,70 @@ async function logout(): Promise<void> {
   flex: 1;
   padding: 2rem;
   overflow-x: auto;
+}
+.content h2 {
+  margin: 0 0 1rem;
+  color: #2e7d32;
+}
+.table-wrap {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+th,
+td {
+  padding: 0.7rem 0.9rem;
+  text-align: left;
+  border-bottom: 1px solid #eef1ef;
+  font-size: 0.9rem;
+}
+th {
+  background: #f3f6f4;
+  color: #4a554f;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+tbody tr:last-child td {
+  border-bottom: none;
+}
+.thumb {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.thumb.placeholder {
+  background: #2e7d32;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.sidebar .user {
+  padding: 0.6rem 0.8rem;
+  border: none;
+  border-radius: 8px;
+  background: #28c635;
+  color: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.sidebar .profile {
+  padding: 0.6rem 0.8rem;
+  border: none;
+  border-radius: 8px;
+  background: #28c635;
+  color: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
 }
 </style>

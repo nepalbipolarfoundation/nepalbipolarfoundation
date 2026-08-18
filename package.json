@@ -8,4 +8,7 @@
     "start": "node dev.mjs",
     "typecheck": "npm run typecheck --prefix server && npm run typecheck --prefix client"
   }
+  "dependencies": {
+  "@vue/cli-service": "^5.0.0"
+}
 }

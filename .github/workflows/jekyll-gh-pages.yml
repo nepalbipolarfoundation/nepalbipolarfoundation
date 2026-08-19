@@ -37,6 +37,8 @@ jobs:
           destination: ./_site
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'client/src' # Points directly to your index.html folder
 
   # Deployment job
   deploy:

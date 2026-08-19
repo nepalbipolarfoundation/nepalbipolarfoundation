@@ -19,7 +19,7 @@
 # ============================================================
 
 # ---------- Stage 1: build the client ----------
-FROM node:20-alpine AS client-build
+FROM node:24-alpine AS client-build
 WORKDIR /app/client
 
 # Install dependencies first (cache-friendly: this layer only
@@ -39,10 +39,10 @@ RUN npm run build
 FROM node:20-alpine AS server-deps
 WORKDIR /app/server
 COPY server/package.json server/package-lock.json ./
-RUN npm ci --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 
 # ---------- Stage 3: runtime ----------
-FROM node:20-alpine AS runtime
+FROM node:24-alpine AS runtime
 WORKDIR /app/server
 
 # Install the server's dependencies (built in stage 2).

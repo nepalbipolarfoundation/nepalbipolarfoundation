@@ -14,8 +14,9 @@ import { LocalStrategy, hooks as localHooks } from '@feathersjs/authentication-l
 import type { HookContext } from '@feathersjs/feathers'
 import type { Application } from './types.js'
 
-// Feathers 5 keeps these security hooks under the "hooks" export.
-const { hashPassword, protect } = localHooks
+// Deprecated in favor of schema resolvers but still functional with Mongoose models.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const { hashPassword, protect } = localHooks as any
 
 // Only admins may set or change roles. Non-admin requests silently
 // have the roles field stripped so it is never saved.
@@ -47,7 +48,7 @@ export const authentication = (app: Application): void => {
       // hashPassword: turn the plain-text password into a bcrypt hash
       // BEFORE it is saved. We never store plain passwords!
       // restrictRoles: only admins may assign roles on create/update.
-      create: [hashPassword('password'), authenticate('jwt'), restrictRoles],
+      create: [hashPassword('password'), restrictRoles],
       // Only logged-in users may list users (dashboard) or view a user.
       find: [authenticate('jwt')],
       get: [authenticate('jwt')],

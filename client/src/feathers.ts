@@ -54,7 +54,7 @@ const app = feathers<ServiceTypes>()
 // Note: fetch must be called as a method of `window`, otherwise the
 // browser throws "Illegal invocation". Wrapping it in an arrow function
 // preserves the correct `this` when the Feathers client calls it.
-app.configure(restClient(SERVER_URL).fetch((url, init) => fetch(url, init)))
+app.configure(restClient(SERVER_URL).fetch((url: string, init: RequestInit) => fetch(url, init)))
 
 // Enable authentication. storage: the access token is saved in the
 // browser's localStorage so the user stays logged in after refresh.

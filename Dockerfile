@@ -36,7 +36,7 @@ ENV VITE_SERVER_URL=$VITE_SERVER_URL
 RUN npm run build
 
 # ---------- Stage 2: server dependencies ----------
-FROM node:20-alpine AS server-deps
+FROM node:24-alpine AS server-deps
 WORKDIR /app/server
 COPY server/package.json server/package-lock.json ./
 RUN npm install --legacy-peer-deps

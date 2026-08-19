@@ -33,7 +33,7 @@ jobs:
       - name: Install and Build Client
         run: |
           cd client
-          npm ci
+          npm ci --legacy-peer-deps
           npm run build
 
       - name: Setup Pages

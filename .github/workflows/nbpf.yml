@@ -43,7 +43,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # Points directly to the build output folder inside client
-          path: 'client/dist' # Change 'dist' to 'build' if using Create React App
+          path: './client/dist' # Change 'dist' to 'build' if using Create React App
 
       - name: Deploy to GitHub Pages
         id: deployment

@@ -29,6 +29,11 @@ const editForm = ref({
   city: '',
 })
 
+// ---- Delete modal state ----
+const showDeleteModal = ref(false)
+const deleting = ref(false)
+const deletingUser = ref<User | null>(null)
+
 // ---- Create modal state ----
 const showCreateModal = ref(false)
 const creating = ref(false)
@@ -156,6 +161,28 @@ async function createUser(): Promise<void> {
   }
 }
 
+// ---- Delete user (admin only) ----
+function openDelete(u: User): void {
+  deletingUser.value = u
+  showDeleteModal.value = true
+}
+
+async function confirmDelete(): Promise<void> {
+  if (!deletingUser.value) return
+  deleting.value = true
+  try {
+    await feathers.service('users').remove(deletingUser.value._id)
+    message.value = 'User deleted.'
+    showDeleteModal.value = false
+    deletingUser.value = null
+    await loadUsers()
+  } catch (e) {
+    error.value = e instanceof Error ? e.message : 'Could not delete user.'
+  } finally {
+    deleting.value = false
+  }
+}
+
 function initials(u: User): string {
   const parts = (u.name || '').trim().split(/\s+/)
   const first = parts[0]?.[0] || ''
@@ -210,6 +237,7 @@ function formatDate(value: string): string {
              <td>{{ u.roles.join(', ') || '—' }}</td>
             <td class="actions">
               <button class="edit" @click="openEdit(u)">Edit</button>
+              <button v-if="auth.isAdmin && u._id !== auth.user?._id" class="danger" @click="openDelete(u)">Delete</button>
             </td>
           </tr>
         </tbody>
@@ -278,6 +306,21 @@ function formatDate(value: string): string {
             </button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- Delete confirmation modal (admin only) -->
+    <div v-if="showDeleteModal" class="overlay" @click.self="showDeleteModal = false">
+      <div class="modal">
+        <h3>Delete user</h3>
+        <p>Are you sure you want to delete <strong>{{ deletingUser?.name }}</strong> ({{ deletingUser?.email }})? This action cannot be undone.</p>
+
+        <div class="modal-actions">
+          <button type="button" class="ghost" @click="showDeleteModal = false">Cancel</button>
+          <button type="button" class="danger" :disabled="deleting" @click="confirmDelete">
+            {{ deleting ? 'Deleting...' : 'Delete' }}
+          </button>
+        </div>
       </div>
     </div>
   </section>

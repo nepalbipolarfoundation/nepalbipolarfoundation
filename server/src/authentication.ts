@@ -18,6 +18,18 @@ import type { Application } from './types.js'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const { hashPassword, protect } = localHooks as any
 
+// Try to decode the JWT if one was sent, without failing for
+// unauthenticated requests (public registration has no token).
+// This populates context.params.user so restrictRoles can tell
+// whether the caller is an admin.
+const optionalAuthenticate = async (context: HookContext): Promise<void> => {
+  try {
+    await authenticate('jwt')(context)
+  } catch {
+    // No token or invalid token — continue unauthenticated.
+  }
+}
+
 // Only admins may set or change roles. Non-admin requests silently
 // have the roles field stripped so it is never saved.
 const restrictRoles = (context: HookContext): void => {
@@ -48,7 +60,7 @@ export const authentication = (app: Application): void => {
       // hashPassword: turn the plain-text password into a bcrypt hash
       // BEFORE it is saved. We never store plain passwords!
       // restrictRoles: only admins may assign roles on create/update.
-      create: [hashPassword('password'), restrictRoles],
+      create: [hashPassword('password'), optionalAuthenticate, restrictRoles],
       // Only logged-in users may list users (dashboard) or view a user.
       find: [authenticate('jwt')],
       get: [authenticate('jwt')],

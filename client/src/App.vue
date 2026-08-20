@@ -69,21 +69,61 @@ body {
 </style>
 
 <style scoped>
-.page {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-}
-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-header h1 {
-  color: #2e7d32;
+/* 1. Remove default browser margins on body */
+body {
   margin: 0;
+  padding: 0;
 }
+
+/* 2. Ensure parent containers don't restrict width */
+.page {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+header {
+  width: 100%;
+  aspect-ratio: 16 / 5;
+  
+  /* Dark overlay for contrast over background image */
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    url('/images/banner.png');
+    
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  
+  /* Push text to the right half of the header */
+  padding-left: 52%; 
+  box-sizing: border-box;
+}
+
+/* Container text adjustment to move it up and fine-tune placement */
+header h1,
 header p {
-  color: #777;
-  margin: 0.4rem 0 0;
+  /* Shifts elements up (-20px). Tweak -20px to move higher/lower */
+  transform: translateY(-20px); 
+  text-align: left;
+}
+
+header h1 {
+  color: #ffffff;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 0 0 0.4rem 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+header p {
+  color: #f0f0f0;
+  font-size: 1.05rem;
+  margin: 0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 </style>

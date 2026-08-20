@@ -16,6 +16,11 @@ services:
   mongo:
     image: mongo:7
     restart: unless-stopped
+    healthcheck:
+      test: mongosh --eval 'db.adminCommand("ping")'
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       # Keep the database data on your machine, not inside the container,
       # so it survives `docker compose down`.
@@ -25,7 +30,8 @@ services:
     build: .
     restart: unless-stopped
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
     environment:
       # The `mongo` hostname resolves to the MongoDB container above.
       - MONGODB_URI=mongodb://mongo:27017/nepal-bipolar-foundation

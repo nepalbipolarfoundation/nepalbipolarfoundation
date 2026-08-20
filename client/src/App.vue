@@ -38,7 +38,11 @@ onMounted(() => auth.restore())
     <!-- Auth screens: centred, with the brand header -->
     <div v-if="!auth.isAuthenticated" class="page">
       <header>
-        <h1>Nepal Bipolar Foundation</h1>
+        <h1>
+  <span class="text-red">Nepal</span> 
+  <span class="text-green">Bipolar</span> 
+  <span class="text-blue">Foundation</span>
+</h1>
         <p>Supporting people living with bipolar disorder in Nepal.</p>
       </header>
 
@@ -113,7 +117,6 @@ header p {
 }
 
 header h1 {
-  color: #ffffff;
   font-size: 2.2rem;
   font-weight: 700;
   margin: 0 0 0.4rem 0;
@@ -125,5 +128,16 @@ header p {
   font-size: 1.05rem;
   margin: 0;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+header h1 .text-red {
+  color: #dc2626; /* Nepal Red */
+}
+
+header h1 .text-green {
+  color: #16a34a; /* Bipolar Green */
+}
+
+header h1 .text-blue {
+  color: #2563eb; /* Foundation Blue */
 }
 </style>

@@ -44,6 +44,7 @@ onMounted(() => auth.restore())
   <span class="text-blue">Foundation</span>
 </h1>
         <p>Supporting people living with bipolar disorder in Nepal.</p>
+        <p>Email: nepal.bipolar.foundation@gmail.com</p>
       </header>
 
       <Login

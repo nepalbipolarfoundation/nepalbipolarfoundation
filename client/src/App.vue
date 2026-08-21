@@ -41,7 +41,6 @@ onMounted(() => auth.restore())
         <p>Supporting people living with bipolar disorder in Nepal.</p>
         <p>Email: nepal.bipolar.foundation@gmail.com</p>
       </header>
-
       <Login
         v-if="!showRegister"
         @go-register="showRegister = true"

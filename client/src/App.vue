@@ -50,7 +50,6 @@ onMounted(() => auth.restore())
         @go-login="showRegister = false"
       />
     </div>
-
     <!-- Logged in: the admin dashboard with the Users menu -->
     <Dashboard v-else />
   </div>

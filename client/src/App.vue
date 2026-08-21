@@ -38,7 +38,6 @@ onMounted(() => auth.restore())
     <!-- Auth screens: centred, with the brand header -->
     <div v-if="!auth.isAuthenticated" class="page">
       <header>
-   
         <p>Supporting people living with bipolar disorder in Nepal.</p>
         <p>Email: nepal.bipolar.foundation@gmail.com</p>
       </header>

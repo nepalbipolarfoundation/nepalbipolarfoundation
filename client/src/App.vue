@@ -34,7 +34,7 @@ onMounted(() => auth.restore());
 </script>
 
 <template>
-  <div>
+  <div id="top">
     <!-- Auth screens: centred, with the brand header -->
     <div v-if="!auth.isAuthenticated" class="page">
       <header>

@@ -63,7 +63,6 @@ async function submit(): Promise<void> {
 
     <!-- Emits 'go-register' so App.vue switches to the registration form -->
     <p class="switch">
-      New here?
       <a href="#" @click.prevent="emit('go-register')">Create an account</a>/<a href="#top"">Go to top</a>
     </p>
   </div>

@@ -40,6 +40,7 @@ onMounted(() => auth.restore());
       <header>
         <p>Supporting people living with bipolar disorder in Nepal.</p>
         <p>Email: nepal.bipolar.foundation@gmail.com</p>
+        <p><a href="#login">Login</a>/<a href="#login">Create an account</a></p>
       </header>
       <div class="card">
         <p>
@@ -64,8 +65,10 @@ onMounted(() => auth.restore());
         <li><strong>Ensure Continuity:</strong> Connect patients with long-term care resources after the initial event.</li>
     </ul>
       </div>
+      <div id="login">
       <Login v-if="!showRegister" @go-register="showRegister = true" />
       <Register v-else @go-login="showRegister = false" />
+      </div>
     </div>
     <!-- Logged in: the admin dashboard with the Users menu -->
     <Dashboard v-else />

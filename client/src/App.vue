@@ -46,7 +46,7 @@ onMounted(() => auth.restore());
           <span><b>Bipolar disorder</b></span>, also known as manic depression, is a mental
           <span><b>disorder</b></span> that causes periods of depression and periods of elevated mood. The elevated mood is significant and is known as mania or hypomania, depending on its severity, or whether symptoms of psychosis are present.
         </p>
-        <p><strong>World Bipolar Day Event (March 30)</strong></p>
+        <p style="text-align: center;"><strong>World Bipolar Day Event (March 30)</strong></p>
 
     <p><strong>Event Overview</strong><br>
     An annual community wellness drive held every March 30 to raise awareness, offer early diagnosis, and support individuals with bipolar disorder, OCD, and other mental health conditions.</p>

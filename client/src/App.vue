@@ -40,7 +40,7 @@ onMounted(() => auth.restore());
       <header>
         <p>Supporting people living with bipolar disorder in Nepal.</p>
         <p>Email: nepal.bipolar.foundation@gmail.com</p>
-        <p><a href="#login" style="color: blue;">Login</a>/<a href="#login" style="color: blue;">Create an account</a></p>
+        <p style="color: blue;"><a href="#login" style="color: blue;">Login</a>/<a href="#login" style="color: blue;">Create an account</a></p>
       </header>
       <div class="card">
         <p>

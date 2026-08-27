@@ -200,7 +200,7 @@ header h1 .text-blue {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 @media screen and (max-width: 768px) {
-  /* CSS rules apply only when screen width is 768px or less */
+  /* CSS rules apply only when screen width is 768px or less prabhat */
   header p {
     color: #f0f0f0;
     margin-right: 2px;

@@ -38,36 +38,71 @@ onMounted(() => auth.restore());
     <!-- Auth screens: centred, with the brand header -->
     <div v-if="!auth.isAuthenticated" class="page">
       <header>
-        <p>Supporting people living with bipolar disorder in Nepal.</p>
-        <p>Email: nepal.bipolar.foundation@gmail.com</p>
-        <p style="color: blue;"><a href="#login" style="color: blue;">Login</a>/<a href="#login" style="color: blue;">Create an account</a></p>
+        <div class="contact-actions">
+          <p>Supporting people living with bipolar disorder in Nepal.</p>
+          <p>Email: nepal.bipolar.foundation@gmail.com</p>
+          <p style="color: blue">
+            <a href="#login" style="color: blue">Login</a>/<a
+              href="#login"
+              style="color: blue"
+              >Create an account</a
+            >
+          </p>
+        </div>
       </header>
       <div class="card">
         <p>
-          <span><b>Bipolar disorder</b></span>, also known as manic depression, is a mental
-          <span><b>disorder</b></span> that causes periods of depression and periods of elevated mood. The elevated mood is significant and is known as mania or hypomania, depending on its severity, or whether symptoms of psychosis are present.
+          <span><b>Bipolar disorder</b></span
+          >, also known as manic depression, is a mental
+          <span><b>disorder</b></span> that causes periods of depression and
+          periods of elevated mood. The elevated mood is significant and is
+          known as mania or hypomania, depending on its severity, or whether
+          symptoms of psychosis are present.
         </p>
-        <p style="text-align: center;"><strong>World Bipolar Day Event (March 30)</strong></p>
+        <p style="text-align: center">
+          <strong>World Bipolar Day Event (March 30)</strong>
+        </p>
 
-    <p><strong>Event Overview</strong><br>
-    An annual community wellness drive held every March 30 to raise awareness, offer early diagnosis, and support individuals with bipolar disorder, OCD, and other mental health conditions.</p>
+        <p>
+          <strong>Event Overview</strong><br />
+          An annual community wellness drive held every March 30 to raise
+          awareness, offer early diagnosis, and support individuals with bipolar
+          disorder, OCD, and other mental health conditions.
+        </p>
 
-    <p><strong>Key Activities</strong></p>
-    <ul>
-        <li><strong>Free Diagnostic Screening:</strong> Professional mental health consultations and check-ups for individuals seeking diagnosis or evaluation.</li>
-        <li><strong>Free Medicine Distribution:</strong> A complimentary 1-month supply of prescribed psychiatric medication for qualified participants.</li>
-    </ul>
+        <p><strong>Key Activities</strong></p>
+        <ul>
+          <li>
+            <strong>Free Diagnostic Screening:</strong> Professional mental
+            health consultations and check-ups for individuals seeking diagnosis
+            or evaluation.
+          </li>
+          <li>
+            <strong>Free Medicine Distribution:</strong> A complimentary 1-month
+            supply of prescribed psychiatric medication for qualified
+            participants.
+          </li>
+        </ul>
 
-    <p><strong>Event Goals</strong></p>
-    <ul>
-        <li><strong>Break Stigma:</strong> Promote open discussion around mental health conditions.</li>
-        <li><strong>Increase Access:</strong> Provide free medical care and immediate relief to underserved individuals.</li>
-        <li><strong>Ensure Continuity:</strong> Connect patients with long-term care resources after the initial event.</li>
-    </ul>
+        <p><strong>Event Goals</strong></p>
+        <ul>
+          <li>
+            <strong>Break Stigma:</strong> Promote open discussion around mental
+            health conditions.
+          </li>
+          <li>
+            <strong>Increase Access:</strong> Provide free medical care and
+            immediate relief to underserved individuals.
+          </li>
+          <li>
+            <strong>Ensure Continuity:</strong> Connect patients with long-term
+            care resources after the initial event.
+          </li>
+        </ul>
       </div>
       <div id="login">
-      <Login v-if="!showRegister" @go-register="showRegister = true" />
-      <Register v-else @go-login="showRegister = false" />
+        <Login v-if="!showRegister" @go-register="showRegister = true" />
+        <Register v-else @go-login="showRegister = false" />
       </div>
     </div>
     <!-- Logged in: the admin dashboard with the Users menu -->
@@ -146,7 +181,6 @@ header p {
   color: #f0f0f0;
   font-size: 1.05rem;
   margin: 0;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 header h1 .text-red {
   color: #dc2626; /* Nepal Red */
@@ -164,5 +198,13 @@ header h1 .text-blue {
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+@media screen and (max-width: 768px) {
+  /* CSS rules apply only when screen width is 768px or less */
+  header p {
+    color: #f0f0f0;
+    margin-right: 2px;
+    font-size: 0.5rem;
+  }
 }
 </style>
